@@ -7,9 +7,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -19,13 +17,18 @@ public class EmployeeController {
     private EmployeeService employeeService;
 
     @PostMapping
-    public Employee createEmployee(@RequestBody Employee employee) {
-        return employeeService.createEmployee(employee);
+    public Employee createEmployee(@RequestBody Employee employee,
+                                   @RequestParam(required = false) Long departmentId,
+                                   @RequestParam(required = false) Long managerId) {
+        return employeeService.createEmployee(employee, departmentId, managerId);
     }
 
     @PutMapping("/{id}")
-    public Employee updateEmployee(@PathVariable Long id, @RequestBody Employee employee) {
-        return employeeService.updateEmployee(id, employee);
+    public Employee updateEmployee(@PathVariable Long id,
+                                   @RequestBody Employee employee,
+                                   @RequestParam(required = false) Long departmentId,
+                                   @RequestParam(required = false) Long managerId) {
+        return employeeService.updateEmployee(id, employee, departmentId, managerId);
     }
 
     @GetMapping
@@ -33,10 +36,8 @@ public class EmployeeController {
                                 @RequestParam(defaultValue = "20") int size,
                                 @RequestParam(required = false) Boolean lookup) {
         if (lookup != null && lookup) {
-            // Return a simplified list of employee names and IDs
             return employeeService.lookupEmployeeNamesAndIds();
         } else {
-            // Return a paginated list of employees along with pagination metadata
             Pageable pageable = PageRequest.of(page, size);
             Page<Employee> employeePage = employeeService.listEmployees(pageable);
 
@@ -49,10 +50,6 @@ public class EmployeeController {
         }
     }
 
-    @GetMapping("/{id}")
-    public Employee getEmployeeById(@PathVariable Long id) {
-        return employeeService.getEmployeeById(id);
-    }
 
     @DeleteMapping("/{id}")
     public void deleteEmployee(@PathVariable Long id) {

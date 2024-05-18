@@ -1,13 +1,11 @@
 package com.example.employeemanagement.Entity;
 
-
-
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 
 import java.time.LocalDate;
-import java.util.Date;
+
 @Data
 @Entity
 @Table(name = "employee")
@@ -32,5 +30,4 @@ public class Employee {
     @ManyToOne
     @JoinColumn(name = "manager_id")
     private Employee manager;
-
 }

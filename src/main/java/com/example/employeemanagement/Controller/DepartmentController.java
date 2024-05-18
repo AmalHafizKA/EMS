@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -18,13 +19,15 @@ public class DepartmentController {
     private DepartmentService departmentService;
 
     @PostMapping
-    public Department createDepartment(@RequestBody Department department) {
-        return departmentService.createDepartment(department);
+    public Department createDepartment(@RequestBody Department department,
+                                       @RequestParam(required = false) Long headId) {
+        return departmentService.createDepartment(department, headId);
     }
 
+
     @PutMapping("/{id}")
-    public Department updateDepartment(@PathVariable Long id, @RequestBody Department department) {
-        return departmentService.updateDepartment(id, department);
+    public Department updateDepartment(@PathVariable Long id,@RequestParam(required = false)Long headId ,@RequestBody Department department) {
+        return departmentService.updateDepartment(id,headId, department);
     }
 
     @DeleteMapping("/{id}")
@@ -33,32 +36,34 @@ public class DepartmentController {
     }
 
     @GetMapping
-    public Object listDepartments(@RequestParam(defaultValue = "0") int page,
-                                  @RequestParam(defaultValue = "20") int size,
-                                  @RequestParam(required = false) String expand) {
-        if ("employee".equals(expand)) {
-            // Return department along with employees
-            Pageable pageable = PageRequest.of(page, size);
-            Page<Department> departmentPage = departmentService.listDepartments(pageable);
-            Map<String, Object> response = new HashMap<>();
-            response.put("departments", departmentPage.getContent());
-            response.put("currentPage", departmentPage.getNumber());
-            response.put("totalItems", departmentPage.getTotalElements());
-            response.put("totalPages", departmentPage.getTotalPages());
-            return response;
+    public Object getDepartments(@RequestParam(defaultValue = "0") int page,
+                                 @RequestParam(defaultValue = "20") int size,
+                                 @RequestParam(required = false) String expand,
+                                 @RequestParam(required = false) Long id) {
+        if (id != null) {
+            if ("employee".equals(expand)) {
+                return departmentService.getDepartmentWithEmployees(id);
+            } else {
+                return departmentService.getDepartmentWithoutEmployees(id);
+            }
         } else {
-            // Return departments without employees
-            return departmentService.listDepartments(page, size);
+            if ("employee".equals(expand)) {
+                List<Department> departments = departmentService.listDepartmentsWithEmployees();
+                Map<String, Object> response = new HashMap<>();
+                response.put("departments", departments);
+                return response;
+            } else {
+                Pageable pageable = PageRequest.of(page, size);
+                Page<Department> departmentPage = departmentService.listDepartments(pageable);
+                Map<String, Object> response = new HashMap<>();
+                response.put("departments", departmentPage.getContent());
+                response.put("currentPage", departmentPage.getNumber());
+                response.put("totalItems", departmentPage.getTotalElements());
+                response.put("totalPages", departmentPage.getTotalPages());
+                return response;
+            }
         }
     }
 
-    @GetMapping("/{id}")
-    public Department getDepartmentById(@PathVariable Long id,
-                                        @RequestParam(required = false) String expand) {
-        if ("employee".equals(expand)) {
-            return departmentService.getDepartmentWithEmployees(id);
-        } else {
-            return departmentService.getDepartmentWithoutEmployees(id);
-        }
-    }
+
 }

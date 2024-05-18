@@ -7,9 +7,8 @@ import com.example.employeemanagement.Repository.EmployeeRepository;
 import com.example.employeemanagement.Entity.Department;
 import com.example.employeemanagement.Entity.Employee;
 import com.example.employeemanagement.Repository.DepartmentRepository;
-
 import java.time.LocalDate;
-import java.util.Calendar;
+
 
 @Component
 public class DataLoader implements CommandLineRunner {
@@ -21,7 +20,6 @@ public class DataLoader implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        // Creating departments
         if (departmentRepository.count() == 0 && employeeRepository.count() == 0) {
 
             Department dept1 = createDepartment("HR");
@@ -77,9 +75,7 @@ public class DataLoader implements CommandLineRunner {
             Employee employee = createEmployee("Employee " + i, LocalDate.of(1990, 1, 1).plusDays(i), 50000.0 + i * 1000, "Address " + i, "Role " + i, LocalDate.now().minusYears(1).plusDays(i), 5.0 + i);
             employee.setDepartment(department);
 
-            // Set reporting manager
             if (i == 1) {
-                // First employee in the list, no reporting manager (reporting directly to head)
                 employee.setManager(null);
                 firstEmployee = employee;
             } else {
