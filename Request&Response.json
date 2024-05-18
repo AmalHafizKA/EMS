@@ -1,0 +1,262 @@
+All Request - Body-Raw(JSON format)
+
+For Employee -
+
+1. POST http://localhost:8082/employees?departmentId=3&managerId=13
+
+{
+  "name": "Anil",
+  "dateOfBirth": "1989-09-25",
+  "salary": 60000.0,
+  "address": "xa1 ann St",
+  "role": "Developer",
+  "joiningDate": "2021-01-01",
+  "yearlyBonusPercentage": 10.0
+}
+
+2.GET http://localhost:8082/employees?lookup=true
+
+Response -
+    {
+        "name": "Arun",
+        "id": 1
+    },
+    {
+        "name": "Rani",
+        "id": 2
+    },
+    {
+        "name": "Manuel",
+        "id": 3
+    },
+    {
+        "name": "Employee 1",
+        "id": 4
+    },
+    {
+        "name": "Employee 2",
+        "id": 5
+    },
+    {
+        "name": "Employee 3",
+        "id": 6
+    }, etc 
+ displays all employee names and their id.
+
+3.GET http://localhost:8082/employees
+
+Response - provides total items , total pages, employees and current page
+it displays as default page=0 and size=20 , so first 20 employees are given
+
+ "totalItems": 37,
+    "totalPages": 2,
+    "employees": [
+        {
+            "id": 1,
+            "name": "Arun",
+            "dateOfBirth": "1980-01-01",
+            "salary": 80000.0,
+            "address": "ABC Address",
+            "role": "HR Department Head",
+            "joiningDate": "2019-05-18",
+            "yearlyBonusPercentage": 10.0,
+            "manager": null
+        },
+        {
+            "id": 2,
+            "name": "Rani",
+            "dateOfBirth": "1985-06-15",
+            "salary": 85000.0,
+            "address": "EFG Address",
+            "role": "Finance Department Head",
+            "joiningDate": "2020-05-18",
+            "yearlyBonusPercentage": 12.0,
+            "manager": null
+        }, 
+        
+        .
+        .
+        .
+
+        {
+            "id": 20,
+            "name": "Employee 8",
+            "dateOfBirth": "1990-01-09",
+            "salary": 58000.0,
+            "address": "Address 8",
+            "role": "Role 8",
+            "joiningDate": "2023-05-26",
+            "yearlyBonusPercentage": 13.0,
+            "manager": {
+                "id": 13,
+                "name": "Employee 1",
+                "dateOfBirth": "1990-01-02",
+                "salary": 51000.0,
+                "address": "Address 1",
+                "role": "Role 1",
+                "joiningDate": "2023-05-19",
+                "yearlyBonusPercentage": 6.0,
+                "manager": null
+            }
+        }
+    ],
+    "currentPage": 0
+}
+
+4.PUT  http://localhost:8082/employees/40
+Request -
+{
+  "name": "faris",
+  "dateOfBirth": "1993-03-21",
+  "salary": 60000.0,
+  "address": "ash St",
+  "role": "QA engineer",
+  "joiningDate": "2023-05-21",
+  "yearlyBonusPercentage": 11.0
+}
+
+Response -
+{
+    "id": 40,
+    "name": "faris",
+    "dateOfBirth": "1993-03-21",
+    "salary": 60000.0,
+    "address": "ash St",
+    "role": "QA engineer",
+    "joiningDate": "2023-05-21",
+    "yearlyBonusPercentage": 11.0,
+    "manager": null
+}
+
+
+For Department -
+
+1.GET http://localhost:8082/departments
+Response -
+{
+    "totalItems": 5,
+    "totalPages": 1,
+    "departments": [
+        {
+            "id": 1,
+            "name": "HR",
+            "creationDate": "2024-05-18",
+            "head": {
+                "id": 1,
+                "name": "Arun",
+                "dateOfBirth": "1980-01-01",
+                "salary": 80000.0,
+                "address": "ABC Address",
+                "role": "HR Department Head",
+                "joiningDate": "2019-05-18",
+                "yearlyBonusPercentage": 10.0,
+                "manager": null
+            },
+            "employees": [
+                {
+                    "id": 1,
+                    "name": "Arun",
+                    "dateOfBirth": "1980-01-01",
+                    "salary": 80000.0,
+                    "address": "ABC Address",
+                    "role": "HR Department Head",
+                    "joiningDate": "2019-05-18",
+                    "yearlyBonusPercentage": 10.0,
+                    "manager": null
+                },
+                ... ,
+
+      current page = 0
+}
+     displays all department and employees within
+
+2.GET http://localhost:8082/departments?expand=employee&Id=1
+Response -
+{
+    "departments": [
+        {
+            "id": 1,
+            "name": "HR",
+            "creationDate": "2024-05-18",
+            "head": {
+                "id": 1,
+                "name": "Arun",
+                "dateOfBirth": "1980-01-01",
+                "salary": 80000.0,
+                "address": "ABC Address",
+                "role": "HR Department Head",
+                "joiningDate": "2019-05-18",
+                "yearlyBonusPercentage": 10.0,
+                "manager": null
+            },
+            "employees": [
+                {
+                    "id": 1,
+                    "name": "Arun",
+                    "dateOfBirth": "1980-01-01",
+                    "salary": 80000.0,
+                    "address": "ABC Address",
+                    "role": "HR Department Head",
+                    "joiningDate": "2019-05-18",
+                    "yearlyBonusPercentage": 10.0,
+                    "manager": null
+                }, 
+              . . . ,
+   }
+displays the particular department and the employees under it.
+
+3. POST http://localhost:8082/departments
+
+Request -
+{
+     "name": "E-services",
+    "creationDate": "2023-10-18"
+    
+}
+
+Response -
+{
+    "id": 6,
+    "name": "E-services",
+    "creationDate": "2023-10-18",
+    "head": null,
+    "employees": null
+}  
+
+4.PUT http://localhost:8082/departments/6
+
+Request -
+{
+     "name": "Marketing",
+    "creationDate": "2023-10-18"
+    
+}
+
+Response -
+{
+    "id": 6,
+    "name": "Marketing",
+    "creationDate": "2023-10-18",
+    "head": null,
+    "employees": []
+}
+
+5.DELETE http://localhost:8082/departments/6
+
+Response - Status OK 200
+
+6.DELETE http://localhost:8082/departments/5
+
+Response - {
+    "timestamp": "2024-05-18T18:45:15.534+00:00",
+    "status": 500,
+    "error": "Internal Server Error",
+    "path": "/departments/5"
+}
+
+Cannot delete department with assigned employees
+     
+
+
+
+
